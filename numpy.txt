@@ -1,0 +1,167 @@
+
+	read_csv	
+
+	states = data/states.csv
+	
+	houses = pd.read_csv("data/kc_house_data.csv")
+
+	houses
+
+	type(houses)
+
+	houses.columns
+	states.columns
+
+	houses.head / tail
+
+	len ( houses )
+
+	houses.shape
+
+	houses.size
+
+	houses.info
+
+	houses.dtypes
+
+	titanic dataset
+
+	netflix = pd.read_csv("data/netflix_titles.csv", sep="|", index_col=0)
+
+	-----------------------------------------------------------------------------------
+
+	Basic DataFrame Analysis¶		sum	min	max	median	mean	count	describe
+
+	houses.min  max
+	
+	type ( houses.max )
+
+	houses.sum ( numeric_only =True )
+
+	count , mean , median , mode , describe, info
+
+	-------------------------------------------------------------------------------------
+
+	Working on Column
+
+	titanic.name
+
+	titanic["name"]
+
+	type ( titanic.name )
+
+	houses.price.sum() / max / min ...
+
+	titanic.name.values
+	titanic.name.index
+
+	----------------------------------
+
+	Important Series Methods		head()	tail()		describe()		unique()	nunique()	nlargest()	nsmallest()	value_counts()	plot() 
+
+	titanic.age.head()
+
+	houses["price"].describe()
+
+	houses["bedroom"].unique() / nunique
+
+	houses.price.nlargest(9)	nsmallest		houses.nlargest(10,["price"])		houses.nlargest(10, ["bedrooms", "bathrooms"])
+
+	houses[["price", "bedrooms", "bathrooms"]].describe()
+
+	houses["bedrooms"].value_counts()
+
+	houses[["bedrooms", "bathrooms"]].value_counts()
+
+	houses.bedrooms.plot()
+
+	houses.bedrooms.value_counts().plot()
+
+	houses.bedrooms.value_counts().plot(kind="bar")
+
+	houses.bedrooms.value_counts().plot(kind="pie")
+
+	titanic.survived.value_counts().plot(kind="pie")
+	titanic.sex.value_counts().plot(kind="pie")
+
+	houses.plot()
+
+	houses[["bedrooms", "bathrooms"]].plot()
+
+	df = houses[["bedrooms", "bathrooms"]]
+df.plot(kind="scatter", x="bedrooms", y="bathrooms")
+
+netflix.rating.value_counts().head(10).plot(kind="bar")
+
+---------------------------------------------------------------------------------
+
+	indexing and sorting
+
+
+
+	houses.sort_values('bedrooms')
+
+	countries.sort_values("Healthy life expectancy", ascending=False, inplace=True)
+
+	countries.sort_values("Healthy life expectancy", ascending=False, inplace=True)
+
+	titanic.pclass.value_counts().plot(kind="bar")
+	
+	houses.bedrooms.value_counts().sort_values().plot ( kind = 'bar')
+
+
+----------------------------------------------------------------------------
+
+	loc , iloc
+
+------------------------------------------------------------------------------------------------------
+
+	Searching
+
+
+	df = titanic.head()
+	df.sex 
+
+	df.sex == 'female'
+	df[df.sex == 'female']
+	df[df["survived"] == 0]
+	titanic[titanic.survived == 1]
+	titanic[titanic.age == "18"]
+	houses[houses["price"] > 5000000]
+	houses[houses["bedrooms"].between(5, 7)]
+
+	countries = ["India", "Japan", "South Korea"]
+	netflix[netflix["country"].isin(countries)]
+
+	women = titanic.sex == 'female'
+died = titanic.survived == 0
+titanic[women & died]
+
+houses[(houses["waterfront"] == 1) & (houses["price"] < 500000)]
+
+houses[(houses["yr_built"] >= 2014) | (houses["yr_renovated"] >= 2014)]
+
+
+	newly_built = houses["yr_built"] >= 2014
+newly_renovated = houses["yr_renovated"] >= 2014
+recent_homes = newly_built | newly_renovated
+houses[recent_homes]
+houses[~recent_homes]
+
+
+------------------------------------------------------------
+
+	droping column
+
+
+	countries.drop(labels="Denmark", axis=0)
+
+	countries.drop(["Denmark", "Iceland", "Finland"])
+
+	countries.drop(countries.index[0])
+
+
+	titanic.drop(columns=["species"], inplace=True)
+
+	houses["price_sqft"] = houses["price"] / houses["sqft_living"]
+	

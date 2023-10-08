@@ -1,0 +1,353 @@
+https://research.aimultiple.com/
+
+https://aidemos.microsoft.com/
+
+
+-----------------------------------------
+
+Creating an Array
+
+np.array(my_list)
+np.array(my_matrix)
+np.arange(0,11,2)
+np.zeros((5,5))
+np.ones((3,3))
+np.linspace(0,5,20)
+np.eye(4)
+np.random.rand(2)
+np.random.rand(5,5)
+np.random.randint(1,100,10)
+
+-----------------------------
+
+Array Attributes
+
+arr = np.arange(25)
+ranarr = np.random.randint(0,50,10)
+
+arr.shape
+
+arr.reshape(5,5)
+arr.reshape(1,25).shape
+
+ranarr.max() / argmax / min / argmin
+
+arr.dtype
+
+--------------------------
+
+indexing and slicing
+
+
+arr = np.arange(0,11)
+
+arr[5]  , arr[1:5]
+
+arr[0:5]=100
+
+slice_of_arr = arr[0:6]
+
+slice_of_arr[:]=99
+
+arr_copy = arr.copy()
+
+2 D Arrays :
+
+arr_2d = np.array(([5,10,15],[20,25,30],[35,40,45]))
+arr_2d[1]
+arr_2d[1][0]
+arr_2d[:2,1:]
+
+------------------------
+
+conditional selection
+
+arr = np.arange(1,11)
+
+arr > 4
+
+arr[arr>4]
+
+------------------------
+
+arithmetic
+
++  -  *  /
+
+np.sqrt(arr)
+
+np.sum()
+
+
+------------------------------------
+
+SERIES
+
+Index and Data Lists
+
+	myindex = ['USA','Canada','Mexico']
+	mydata = [1776,1867,1821]
+
+	myser = pd.Series(data=mydata)
+	pd.Series(data=mydata,index=myindex)
+
+	ran_data = np.random.randint(0,100,4)
+	names = ['Andrew','Bobo','Claire','David']
+
+	ages = pd.Series(ran_data,names)
+
+From dict
+
+	ages = {'Sammy':5,'Frank':10,'Spike':7}
+	pd.Series(ages)
+
+Named Index
+
+	q1 = {'Japan': 80, 'China': 450, 'India': 200, 'USA': 250}
+	q2 = {'Brazil': 100,'China': 500, 'India': 210,'USA': 260}
+
+	sales_Q1 = pd.Series(q1)
+	sales_Q2 = pd.Series(q2)
+
+	sales_Q1['Japan']
+	sales_Q1[0]
+
+Operations
+
+	sales_Q1.keys()
+	sales_Q1 * 2
+	sales_Q2 / 100
+
+	sales_Q1 + sales_Q2
+
+	sales_Q1.add(sales_Q2,fill_value=0)
+
+---------------------------------------------------------
+
+Data Frame
+
+
+	Creating Dataframe from Python Objects
+
+		np.random.seed(101)
+		mydata = np.random.randint(0,101,(4,3))
+
+		df = pd.DataFrame(data=mydata)
+
+		myindex = ['CA','NY','AZ','TX']
+		mycolumns = ['Jan','Feb','Mar']
+	
+		df = pd.DataFrame(data=mydata,index=myindex)
+
+		df = pd.DataFrame(data=mydata,index=myindex,columns=mycolumns)
+
+		df.info()
+
+	----------------------
+
+	df = pd.read_csv('tips.csv')
+	df.columns
+	df.index
+	df.head
+	df.tail
+	df.info
+	len(df)
+	df.describe
+	df.describe().transpose()
+
+	selection and indexing
+
+	df['total_bill']
+	type(df['total_bill'])
+	df[['total_bill','tip']]
+
+	add column
+
+	df['tip_percentage'] = 100* df['tip'] / df['total_bill']
+	df['price_per_person'] = df['total_bill'] / df['size']
+
+	modify
+
+	df['price_per_person'] = np.round(df['price_per_person'],2)
+
+	drop
+
+	df = df.drop("tip_percentage",axis=1)	
+
+
+	set index
+
+	df.index
+	df.set_index('Payment ID')
+	df.head()
+	df = df.reset_index()
+
+
+	row selection
+
+	df = df.set_index('Payment ID')
+
+	# Integer Based		df.iloc[0]				df.iloc[0:4]
+	# Name Based		df.loc['Sun2959']		df.loc[['Sun2959','Sun5260']]
+
+
+	drop row
+
+	df.drop('Sun2959',axis=0).head()
+
+
+-----------------------------------------------------------
+
+
+Filtering
+
+
+	bool_series = df['total_bill'] > 30		df[bool_series]
+
+	df[df['sex'] == 'Male']
+
+	df[(df['total_bill'] > 30) & (df['sex']=='Male')]
+
+	df[(df['total_bill'] > 30) & ~(df['sex']=='Male')]
+
+	df[(df['total_bill'] > 30) & (df['sex']!='Male')]
+
+	# The Weekend		df[(df['day'] =='Sun') | (df['day']=='Sat')]
+
+	options = ['Sat','Sun']	
+	df['day'].isin(options)
+
+	df[df['day'].isin(['Sat','Sun'])]
+
+------------------------------------------------------------
+
+useful methods
+
+
+	df = pd.read_csv('tips.csv')
+
+	def last_four(num):
+	    return str(num)[-4:]
+
+	df['last_four'] = df['CC Number'].apply(last_four)
+
+	def yelp(price):
+	    if price < 10:
+        	return '$'
+	    elif price >= 10 and price < 30:
+        	return '$$'
+	    else:
+        	return '$$$'
+
+	df['Expensive'] = df['total_bill'].apply(yelp)
+
+	df['total_bill'].apply(lambda bill:bill*0.18)
+
+apply that uses multiple columns
+
+	def quality(total_bill,tip):
+	    if tip/total_bill  > 0.25:
+        	return "Generous"
+	    else:
+        	return "Other"	
+
+	df['Tip Quality'] = df[['total_bill','tip']].apply(lambda df: quality(df['total_bill'],df['tip']),axis=1)
+
+
+------------------------
+
+	statistics
+
+		df.describe()
+		df.describe().transpose()
+		df.sort_values('tip')
+		df.sort_values(['tip','size'])
+		df.corr()
+		df[['total_bill','tip']].corr()
+		df['total_bill'].max()
+		df['total_bill'].idxmax()
+		df['total_bill'].idxmin()		df.iloc[67]
+
+
+	df['sex'].value_counts()
+
+	df['Tip Quality'].replace(to_replace='Other',value='Ok')
+	df['Tip Quality'] = df['Tip Quality'].replace(to_replace='Other',value='Ok')
+
+
+	df['size'].unique()
+	df['size'].nunique()
+	df['time'].unique()
+
+	
+	my_map = {'Dinner':'D','Lunch':'L'}
+	df['time'].map(my_map)
+
+
+	df.duplicated()
+	simple_df.drop_duplicates()
+
+
+	df['total_bill'].between(10,20,inclusive=True)
+	df[df['total_bill'].between(10,20,inclusive=True)]
+
+
+	df.sample(5)
+
+
+	df.nlargest(10,'tip')
+
+-----------------------------------------------------
+
+	Missing data
+
+	
+df = pd.read_csv('movie_scores.csv')
+df.isnull()
+df[df['first_name'].notnull()]
+df.dropna()
+df.dropna(axis=1)
+df.dropna(thresh=4,axis=1)
+df.fillna("NEW VALUE!")
+df['first_name'].fillna("Empty")
+df['first_name'] = df['first_name'].fillna("Empty")
+
+df['pre_movie_score'].mean()
+df['pre_movie_score'].fillna(df['pre_movie_score'].mean())
+df.fillna(df.mean())
+
+----------------------------------------------------------
+
+	Groupby
+
+
+	df = pd.read_csv('mpg.csv')
+	df.groupby('model_year')
+	df.groupby('model_year').mean()		# model_year becomes the index! It is NOT a column name,it is now the name of the index
+
+	avg_year = df.groupby('model_year').mean()
+	avg_year.index
+	avg_year.columns
+	avg_year['mpg']
+
+	df.groupby('model_year').mean()['mpg']
+	df.groupby('model_year').describe()
+
+	df.groupby(['model_year','cylinders']).mean()
+
+	df.groupby(['model_year','cylinders']).mean().index
+
+---------------------------------------------------------------
+
+	Combining
+
+	registrations = pd.DataFrame({'reg_id':[1,2,3,4],'name':['Andrew','Bobo','Claire','David']})
+	logins = pd.DataFrame({'log_id':[1,2,3,4],'name':['Xavier','Andrew','Yolanda','Bobo']})
+
+	pd.merge(registrations,logins,how='inner',on='name')
+
+	pd.merge(registrations,logins,how='left')
+
+	pd.merge(registrations,logins,how='right')
+
+	pd.merge(registrations,logins,how='outer')
